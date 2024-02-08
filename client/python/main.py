@@ -1,13 +1,13 @@
-import client
+import kafka_client as client
 
 if __name__ == '__main__':
     while True:
-        cmd = input().strip().lower()
-        if cmd == "push":
-            key = input("key: ")
-            value = input("value: ")
+        cmd = input("CMD: ").strip().upper()
+        if cmd == "PUSH":
+            key = input("KEY: ")
+            value = input("VALUE: ")
             client.push(key, value.encode("utf-8"))
-        elif cmd == "pull":
+        elif cmd == "PULL":
             key, value = client.pull()
             print(f"key: {key}, value: {value.decode('utf-8')}")
         else:

@@ -8,4 +8,9 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "gateway.py"]
+ARG HOST
+ENV HOST ${HOST}
+ARG PORT
+ENV PORT ${PORT}
+
+CMD flask --app gateway run --host ${HOST} --port ${PORT}

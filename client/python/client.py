@@ -4,6 +4,8 @@ import base64
 import json
 import threading
 
+GATEWAY_URL = os.getenv("GATEWAY_HOST") + ":" + os.getenv("GATEWAY_PORT")
+
 def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes:
     response = None
     while response is None:
@@ -17,13 +19,13 @@ def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes
     return response
 
 def push(key: str, value) -> None:
-    url = os.getenv("API_GATEWAY_URL") + "/push"
+    url = GATEWAY_URL + "/push"
     value = base64.b64encode(value).decode("utf-8")
     data = {"key": key, "value": value}
     blocking_request("POST", url, data, {})
 
 def pull() -> bytes:
-    url = os.getenv("API_GATEWAY_URL") + "/pull"
+    url = GATEWAY_URL + "/pull"
     response = blocking_request("GET", url, None, {})
     data = json.loads(response.content)
     key = data["key"]

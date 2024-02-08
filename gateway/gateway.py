@@ -27,7 +27,7 @@ def push():
 @app.route("/pull", methods=["GET"])
 def pull():
     key = request.args.get("key")
-    response = stub.Pull(Message(key=key))
+    response = stub.Pull(Empty())
     return Response({
         "key": response.key,
         "value": response.value
@@ -35,7 +35,6 @@ def pull():
 
 
 if __name__ == "__main__":
-    channel = grpc.insecure_channel(
-        f"{os.getenv('MESSAGE_QUEUE_HOST')}:{os.getenv('MESSAGE_QUEUE_PORT')}")
+    channel = grpc.insecure_channel(f"{os.getenv('ZOOKEEPER_HOST')}:{os.getenv('ZOOKEEPER_PORT')}")
     stub = message_pb2_grpc.MessageQueueStub(channel)
     app.run(host=os.getenv("GATEWAY_HOST"), port=os.getenv("GATEWAY_PORT"))

@@ -1,0 +1,15 @@
+version: '3'
+services:
+  gateway:
+    build:
+      context: gateway
+    ports:
+      - 8080:8080
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    build:
+      context: zookeeper
+    ports:
+      - 2181:2181

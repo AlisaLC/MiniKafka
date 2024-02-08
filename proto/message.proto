@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+enum PushStatus {
+    SUCCESS = 0;
+    FAILURE = 1;
+}
+
+message Message {
+    string key = 1;
+    bytes value = 2;
+}
+
+message PushResponse {
+    PushStatus status = 1;
+    string message = 2;
+}
+
+message Empty {}
+
+service MessageQueue {
+    rpc Push(Message) returns (PushResponse) {}
+    rpc Pull(Empty) returns (Message) {}
+}

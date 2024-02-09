@@ -1,6 +1,7 @@
 version: '3'
 services:
   gateway:
+    container_name: gateway
     build:
       context: gateway
       args:
@@ -14,9 +15,36 @@ services:
       - .env
 
   zookeeper:
+    container_name: zookeeper
     build:
       context: zookeeper
     ports:
       - 2181:2181
     env_file:
       - .env
+  
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - gateway
+    env_file:
+      - .env
+  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    env_file:
+      - .env
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources

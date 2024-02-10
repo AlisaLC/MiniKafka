@@ -2,9 +2,9 @@ import base64
 from flask import Flask
 from flask import request, jsonify
 import os
-from message_pb2 import Message, Empty, PushStatus
+from proto.message_pb2 import Message, Empty, PushStatus
 import grpc
-import message_pb2_grpc
+import proto.message_pb2_grpc as message_pb2_grpc
 import logging
 from prometheus_client import generate_latest, Counter, Summary
 

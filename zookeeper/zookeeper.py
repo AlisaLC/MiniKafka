@@ -1,6 +1,6 @@
 import grpc
-from message_pb2 import Message, PushResponse, PushStatus
-import message_pb2_grpc
+from proto.message_pb2 import Message, PushResponse, PushStatus
+import proto.message_pb2_grpc as message_pb2_grpc
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor

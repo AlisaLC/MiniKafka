@@ -36,12 +36,12 @@ class BrokerStub(object):
                 )
         self.LeadReplica = channel.unary_unary(
                 '/Broker/LeadReplica',
-                request_serializer=broker__pb2.ReplicaID.SerializeToString,
+                request_serializer=broker__pb2.Empty.SerializeToString,
                 response_deserializer=broker__pb2.Empty.FromString,
                 )
         self.DropReplica = channel.unary_unary(
                 '/Broker/DropReplica',
-                request_serializer=broker__pb2.ReplicaID.SerializeToString,
+                request_serializer=broker__pb2.Empty.SerializeToString,
                 response_deserializer=broker__pb2.Empty.FromString,
                 )
         self.PushReplica = channel.unary_unary(
@@ -132,12 +132,12 @@ def add_BrokerServicer_to_server(servicer, server):
             ),
             'LeadReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.LeadReplica,
-                    request_deserializer=broker__pb2.ReplicaID.FromString,
+                    request_deserializer=broker__pb2.Empty.FromString,
                     response_serializer=broker__pb2.Empty.SerializeToString,
             ),
             'DropReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.DropReplica,
-                    request_deserializer=broker__pb2.ReplicaID.FromString,
+                    request_deserializer=broker__pb2.Empty.FromString,
                     response_serializer=broker__pb2.Empty.SerializeToString,
             ),
             'PushReplica': grpc.unary_unary_rpc_method_handler(
@@ -240,7 +240,7 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/LeadReplica',
-            broker__pb2.ReplicaID.SerializeToString,
+            broker__pb2.Empty.SerializeToString,
             broker__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -257,7 +257,7 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/DropReplica',
-            broker__pb2.ReplicaID.SerializeToString,
+            broker__pb2.Empty.SerializeToString,
             broker__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

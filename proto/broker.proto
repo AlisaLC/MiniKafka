@@ -42,8 +42,8 @@ service Broker {
     rpc Pull(Empty) returns (Message) {}
 
     rpc SetReplica(ReplicaRequest) returns (Empty) {}
-    rpc LeadReplica(ReplicaID) returns (Empty) {}
-    rpc DropReplica(ReplicaID) returns (Empty) {}
+    rpc LeadReplica(Empty) returns (Empty) {}
+    rpc DropReplica(Empty) returns (Empty) {}
 
     rpc PushReplica(MessageList) returns (PushResponse) {}
     rpc DropReplicaMessages(MessageCount) returns (Empty) {}

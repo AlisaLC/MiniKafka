@@ -11,21 +11,21 @@ message Message {
 }
 
 message MessageList {
-    int32 replica_id = 1;
+    string replica_uuid = 1;
     repeated Message messages = 2;
 }
 
 message ReplicaRequest {
-    int32 id = 1;
+    string uuid = 1;
     string url = 2;
 }
 
 message ReplicaID {
-    int32 id = 1;
+    string uuid = 1;
 }
 
 message MessageCount {
-    int32 replica_id = 1;
+    string replica_uuid = 1;
     int32 count = 2;
 }
 
@@ -43,6 +43,7 @@ service Broker {
 
     rpc SetReplica(ReplicaRequest) returns (Empty) {}
     rpc LeadReplica(ReplicaID) returns (Empty) {}
+    rpc DropReplica(ReplicaID) returns (Empty) {}
 
     rpc PushReplica(MessageList) returns (PushResponse) {}
     rpc DropReplicaMessages(MessageCount) returns (Empty) {}

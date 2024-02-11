@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message ReplicaRequest {
+    string uuid = 1;
+    string url = 2;
+}
+
+message Empty {}
+
+service Zookeeper {
+    rpc Ack(Empty) returns (Empty) {}
+
+    rpc Register(ReplicaRequest) returns (Empty) {}
+}

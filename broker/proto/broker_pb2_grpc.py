@@ -39,6 +39,11 @@ class BrokerStub(object):
                 request_serializer=broker__pb2.ReplicaID.SerializeToString,
                 response_deserializer=broker__pb2.Empty.FromString,
                 )
+        self.DropReplica = channel.unary_unary(
+                '/Broker/DropReplica',
+                request_serializer=broker__pb2.ReplicaID.SerializeToString,
+                response_deserializer=broker__pb2.Empty.FromString,
+                )
         self.PushReplica = channel.unary_unary(
                 '/Broker/PushReplica',
                 request_serializer=broker__pb2.MessageList.SerializeToString,
@@ -84,6 +89,12 @@ class BrokerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DropReplica(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def PushReplica(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -121,6 +132,11 @@ def add_BrokerServicer_to_server(servicer, server):
             ),
             'LeadReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.LeadReplica,
+                    request_deserializer=broker__pb2.ReplicaID.FromString,
+                    response_serializer=broker__pb2.Empty.SerializeToString,
+            ),
+            'DropReplica': grpc.unary_unary_rpc_method_handler(
+                    servicer.DropReplica,
                     request_deserializer=broker__pb2.ReplicaID.FromString,
                     response_serializer=broker__pb2.Empty.SerializeToString,
             ),
@@ -224,6 +240,23 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/LeadReplica',
+            broker__pb2.ReplicaID.SerializeToString,
+            broker__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DropReplica(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Broker/DropReplica',
             broker__pb2.ReplicaID.SerializeToString,
             broker__pb2.Empty.FromString,
             options, channel_credentials,

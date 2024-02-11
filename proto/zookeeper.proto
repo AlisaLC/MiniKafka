@@ -1,8 +1,17 @@
 syntax = "proto3";
 
-message ReplicaRequest {
+enum Status {
+    SUCCESS = 0;
+    FAILURE = 1;
+}
+
+message DiscoveryRequest {
     string uuid = 1;
     string url = 2;
+}
+
+message DiscoveryResponse {
+    Status status = 1;
 }
 
 message Empty {}
@@ -10,5 +19,5 @@ message Empty {}
 service Zookeeper {
     rpc Ack(Empty) returns (Empty) {}
 
-    rpc Register(ReplicaRequest) returns (Empty) {}
+    rpc Register(DiscoveryRequest) returns (DiscoveryResponse) {}
 }

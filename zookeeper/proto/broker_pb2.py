@@ -14,29 +14,31 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x62roker.proto\"%\n\x07Message\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"?\n\x0bMessageList\x12\x14\n\x0creplica_uuid\x18\x01 \x01(\t\x12\x1a\n\x08messages\x18\x02 \x03(\x0b\x32\x08.Message\"+\n\x0eReplicaRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"\x19\n\tReplicaID\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"3\n\x0cMessageCount\x12\x14\n\x0creplica_uuid\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\"+\n\x0cPushResponse\x12\x1b\n\x06status\x18\x01 \x01(\x0e\x32\x0b.PushStatus\"\x07\n\x05\x45mpty*&\n\nPushStatus\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\x32\xa9\x02\n\x06\x42roker\x12\x17\n\x03\x41\x63k\x12\x06.Empty\x1a\x06.Empty\"\x00\x12!\n\x04Push\x12\x08.Message\x1a\r.PushResponse\"\x00\x12\x1a\n\x04Pull\x12\x06.Empty\x1a\x08.Message\"\x00\x12\'\n\nSetReplica\x12\x0f.ReplicaRequest\x1a\x06.Empty\"\x00\x12\x1f\n\x0bLeadReplica\x12\x06.Empty\x1a\x06.Empty\"\x00\x12\x1f\n\x0b\x44ropReplica\x12\x06.Empty\x1a\x06.Empty\"\x00\x12,\n\x0bPushReplica\x12\x0c.MessageList\x1a\r.PushResponse\"\x00\x12.\n\x13\x44ropReplicaMessages\x12\r.MessageCount\x1a\x06.Empty\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x62roker.proto\"%\n\x07Message\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"8\n\x0cPushResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0cPullResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x19\n\x07message\x18\x02 \x01(\x0b\x32\x08.Message\"+\n\x0eReplicaRequest\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"*\n\x0fReplicaResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\")\n\x0bMessageList\x12\x1a\n\x08messages\x18\x01 \x03(\x0b\x32\x08.Message\"\x1d\n\x0cMessageCount\x12\r\n\x05\x63ount\x18\x01 \x01(\x05\"\x07\n\x05\x45mpty*\"\n\x06Status\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\x32\xb8\x02\n\x06\x42roker\x12\x17\n\x03\x41\x63k\x12\x06.Empty\x1a\x06.Empty\"\x00\x12!\n\x04Push\x12\x08.Message\x1a\r.PushResponse\"\x00\x12\x1f\n\x04Pull\x12\x06.Empty\x1a\r.PullResponse\"\x00\x12\x31\n\nSetReplica\x12\x0f.ReplicaRequest\x1a\x10.ReplicaResponse\"\x00\x12\x1f\n\x0bLeadReplica\x12\x06.Empty\x1a\x06.Empty\"\x00\x12\x1f\n\x0b\x44ropReplica\x12\x06.Empty\x1a\x06.Empty\"\x00\x12,\n\x0bPushReplica\x12\x0c.MessageList\x1a\r.PushResponse\"\x00\x12.\n\x13\x44ropReplicaMessages\x12\r.MessageCount\x1a\x06.Empty\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'broker_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
-  _globals['_PUSHSTATUS']._serialized_start=299
-  _globals['_PUSHSTATUS']._serialized_end=337
+  _globals['_STATUS']._serialized_start=353
+  _globals['_STATUS']._serialized_end=387
   _globals['_MESSAGE']._serialized_start=16
   _globals['_MESSAGE']._serialized_end=53
-  _globals['_MESSAGELIST']._serialized_start=55
-  _globals['_MESSAGELIST']._serialized_end=118
-  _globals['_REPLICAREQUEST']._serialized_start=120
-  _globals['_REPLICAREQUEST']._serialized_end=163
-  _globals['_REPLICAID']._serialized_start=165
-  _globals['_REPLICAID']._serialized_end=190
-  _globals['_MESSAGECOUNT']._serialized_start=192
-  _globals['_MESSAGECOUNT']._serialized_end=243
-  _globals['_PUSHRESPONSE']._serialized_start=245
-  _globals['_PUSHRESPONSE']._serialized_end=288
-  _globals['_EMPTY']._serialized_start=290
-  _globals['_EMPTY']._serialized_end=297
-  _globals['_BROKER']._serialized_start=340
-  _globals['_BROKER']._serialized_end=637
+  _globals['_PUSHRESPONSE']._serialized_start=55
+  _globals['_PUSHRESPONSE']._serialized_end=111
+  _globals['_PULLRESPONSE']._serialized_start=113
+  _globals['_PULLRESPONSE']._serialized_end=179
+  _globals['_REPLICAREQUEST']._serialized_start=181
+  _globals['_REPLICAREQUEST']._serialized_end=224
+  _globals['_REPLICARESPONSE']._serialized_start=226
+  _globals['_REPLICARESPONSE']._serialized_end=268
+  _globals['_MESSAGELIST']._serialized_start=270
+  _globals['_MESSAGELIST']._serialized_end=311
+  _globals['_MESSAGECOUNT']._serialized_start=313
+  _globals['_MESSAGECOUNT']._serialized_end=342
+  _globals['_EMPTY']._serialized_start=344
+  _globals['_EMPTY']._serialized_end=351
+  _globals['_BROKER']._serialized_start=390
+  _globals['_BROKER']._serialized_end=702
 # @@protoc_insertion_point(module_scope)

@@ -1,14 +1,17 @@
 from typing import Callable
+
 import requests
+import json
+
 import os
 import base64
-import json
+import time
 import threading
-import dotenv
-import logging
 
+import dotenv
 dotenv.load_dotenv()
 
+import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -26,6 +29,9 @@ def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes
                 response = requests.post(url, data=data, headers=headers)
         except requests.exceptions.ConnectionError:
             pass
+        if response.status_code != 200:
+            response = None
+            time.sleep(1)
     return response
 
 def push(key: str, value) -> None:

@@ -27,12 +27,12 @@ class BrokerStub(object):
         self.Pull = channel.unary_unary(
                 '/Broker/Pull',
                 request_serializer=broker__pb2.Empty.SerializeToString,
-                response_deserializer=broker__pb2.Message.FromString,
+                response_deserializer=broker__pb2.PullResponse.FromString,
                 )
         self.SetReplica = channel.unary_unary(
                 '/Broker/SetReplica',
                 request_serializer=broker__pb2.ReplicaRequest.SerializeToString,
-                response_deserializer=broker__pb2.Empty.FromString,
+                response_deserializer=broker__pb2.ReplicaResponse.FromString,
                 )
         self.LeadReplica = channel.unary_unary(
                 '/Broker/LeadReplica',
@@ -123,12 +123,12 @@ def add_BrokerServicer_to_server(servicer, server):
             'Pull': grpc.unary_unary_rpc_method_handler(
                     servicer.Pull,
                     request_deserializer=broker__pb2.Empty.FromString,
-                    response_serializer=broker__pb2.Message.SerializeToString,
+                    response_serializer=broker__pb2.PullResponse.SerializeToString,
             ),
             'SetReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.SetReplica,
                     request_deserializer=broker__pb2.ReplicaRequest.FromString,
-                    response_serializer=broker__pb2.Empty.SerializeToString,
+                    response_serializer=broker__pb2.ReplicaResponse.SerializeToString,
             ),
             'LeadReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.LeadReplica,
@@ -207,7 +207,7 @@ class Broker(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/Pull',
             broker__pb2.Empty.SerializeToString,
-            broker__pb2.Message.FromString,
+            broker__pb2.PullResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -224,7 +224,7 @@ class Broker(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/SetReplica',
             broker__pb2.ReplicaRequest.SerializeToString,
-            broker__pb2.Empty.FromString,
+            broker__pb2.ReplicaResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

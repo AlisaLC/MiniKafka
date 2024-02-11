@@ -22,7 +22,7 @@ class MessageQueueStub(object):
         self.Pull = channel.unary_unary(
                 '/MessageQueue/Pull',
                 request_serializer=message__pb2.Empty.SerializeToString,
-                response_deserializer=message__pb2.Message.FromString,
+                response_deserializer=message__pb2.PullResponse.FromString,
                 )
 
 
@@ -52,7 +52,7 @@ def add_MessageQueueServicer_to_server(servicer, server):
             'Pull': grpc.unary_unary_rpc_method_handler(
                     servicer.Pull,
                     request_deserializer=message__pb2.Empty.FromString,
-                    response_serializer=message__pb2.Message.SerializeToString,
+                    response_serializer=message__pb2.PullResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,6 +94,6 @@ class MessageQueue(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/MessageQueue/Pull',
             message__pb2.Empty.SerializeToString,
-            message__pb2.Message.FromString,
+            message__pb2.PullResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-enum PushStatus {
+enum Status {
     SUCCESS = 0;
     FAILURE = 1;
 }
@@ -11,13 +11,18 @@ message Message {
 }
 
 message PushResponse {
-    PushStatus status = 1;
+    Status status = 1;
     string message = 2;
+}
+
+message PullResponse {
+    Status status = 1;
+    Message message = 2;
 }
 
 message Empty {}
 
 service MessageQueue {
     rpc Push(Message) returns (PushResponse) {}
-    rpc Pull(Empty) returns (Message) {}
+    rpc Pull(Empty) returns (PullResponse) {}
 }

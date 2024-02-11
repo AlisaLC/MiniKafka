@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-enum PushStatus {
+enum Status {
     SUCCESS = 0;
     FAILURE = 1;
 }
@@ -10,9 +10,14 @@ message Message {
     bytes value = 2;
 }
 
-message MessageList {
-    string replica_uuid = 1;
-    repeated Message messages = 2;
+message PushResponse {
+    Status status = 1;
+    string message = 2;
+}
+
+message PullResponse {
+    Status status = 1;
+    Message message = 2;
 }
 
 message ReplicaRequest {
@@ -20,17 +25,16 @@ message ReplicaRequest {
     string url = 2;
 }
 
-message ReplicaID {
-    string uuid = 1;
+message ReplicaResponse {
+    Status status = 1;
+}
+
+message MessageList {
+    repeated Message messages = 1;
 }
 
 message MessageCount {
-    string replica_uuid = 1;
-    int32 count = 2;
-}
-
-message PushResponse {
-    PushStatus status = 1;
+    int32 count = 1;
 }
 
 message Empty {}
@@ -39,9 +43,9 @@ service Broker {
     rpc Ack(Empty) returns (Empty) {}
 
     rpc Push(Message) returns (PushResponse) {}
-    rpc Pull(Empty) returns (Message) {}
+    rpc Pull(Empty) returns (PullResponse) {}
 
-    rpc SetReplica(ReplicaRequest) returns (Empty) {}
+    rpc SetReplica(ReplicaRequest) returns (ReplicaResponse) {}
     rpc LeadReplica(Empty) returns (Empty) {}
     rpc DropReplica(Empty) returns (Empty) {}
 

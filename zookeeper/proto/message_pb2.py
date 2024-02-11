@@ -14,21 +14,23 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\"%\n\x07Message\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"<\n\x0cPushResponse\x12\x1b\n\x06status\x18\x01 \x01(\x0e\x32\x0b.PushStatus\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x07\n\x05\x45mpty*&\n\nPushStatus\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\x32M\n\x0cMessageQueue\x12!\n\x04Push\x12\x08.Message\x1a\r.PushResponse\"\x00\x12\x1a\n\x04Pull\x12\x06.Empty\x1a\x08.Message\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\"%\n\x07Message\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"8\n\x0cPushResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0cPullResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x19\n\x07message\x18\x02 \x01(\x0b\x32\x08.Message\"\x07\n\x05\x45mpty*\"\n\x06Status\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\x32R\n\x0cMessageQueue\x12!\n\x04Push\x12\x08.Message\x1a\r.PushResponse\"\x00\x12\x1f\n\x04Pull\x12\x06.Empty\x1a\r.PullResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'message_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
-  _globals['_PUSHSTATUS']._serialized_start=127
-  _globals['_PUSHSTATUS']._serialized_end=165
+  _globals['_STATUS']._serialized_start=191
+  _globals['_STATUS']._serialized_end=225
   _globals['_MESSAGE']._serialized_start=17
   _globals['_MESSAGE']._serialized_end=54
   _globals['_PUSHRESPONSE']._serialized_start=56
-  _globals['_PUSHRESPONSE']._serialized_end=116
-  _globals['_EMPTY']._serialized_start=118
-  _globals['_EMPTY']._serialized_end=125
-  _globals['_MESSAGEQUEUE']._serialized_start=167
-  _globals['_MESSAGEQUEUE']._serialized_end=244
+  _globals['_PUSHRESPONSE']._serialized_end=112
+  _globals['_PULLRESPONSE']._serialized_start=114
+  _globals['_PULLRESPONSE']._serialized_end=180
+  _globals['_EMPTY']._serialized_start=182
+  _globals['_EMPTY']._serialized_end=189
+  _globals['_MESSAGEQUEUE']._serialized_start=227
+  _globals['_MESSAGEQUEUE']._serialized_end=309
 # @@protoc_insertion_point(module_scope)

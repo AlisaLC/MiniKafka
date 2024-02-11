@@ -50,6 +50,11 @@ func blockingRequest(method, url string, data []byte, headers map[string]string)
 			time.Sleep(time.Second)
 			continue
 		}
+		if resp.StatusCode != 200 {
+			log.Println("Error response:", resp.Status, body.String())
+			time.Sleep(time.Second)
+			continue
+		}
 		return body.Bytes()
 	}
 }

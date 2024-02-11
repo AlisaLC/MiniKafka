@@ -21,8 +21,8 @@ class ZookeeperStub(object):
                 )
         self.Register = channel.unary_unary(
                 '/Zookeeper/Register',
-                request_serializer=zookeeper__pb2.ReplicaRequest.SerializeToString,
-                response_deserializer=zookeeper__pb2.Empty.FromString,
+                request_serializer=zookeeper__pb2.DiscoveryRequest.SerializeToString,
+                response_deserializer=zookeeper__pb2.DiscoveryResponse.FromString,
                 )
 
 
@@ -51,8 +51,8 @@ def add_ZookeeperServicer_to_server(servicer, server):
             ),
             'Register': grpc.unary_unary_rpc_method_handler(
                     servicer.Register,
-                    request_deserializer=zookeeper__pb2.ReplicaRequest.FromString,
-                    response_serializer=zookeeper__pb2.Empty.SerializeToString,
+                    request_deserializer=zookeeper__pb2.DiscoveryRequest.FromString,
+                    response_serializer=zookeeper__pb2.DiscoveryResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -93,7 +93,7 @@ class Zookeeper(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Zookeeper/Register',
-            zookeeper__pb2.ReplicaRequest.SerializeToString,
-            zookeeper__pb2.Empty.FromString,
+            zookeeper__pb2.DiscoveryRequest.SerializeToString,
+            zookeeper__pb2.DiscoveryResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

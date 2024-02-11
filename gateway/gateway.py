@@ -1,31 +1,33 @@
-import base64
 from flask import Flask
 from flask import request, jsonify
-import os
-from proto.message_pb2 import Message, Empty, PushStatus
-import grpc
-import proto.message_pb2_grpc as message_pb2_grpc
-import logging
-from prometheus_client import generate_latest, Counter, Summary
 
+from proto.message_pb2 import Message, Empty, Status
+import proto.message_pb2_grpc as message_pb2_grpc
+import grpc
+
+import base64
+import os
+
+import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+from prometheus_client import generate_latest, Counter, Summary
+PUSH_COUNTER = Counter("gateway_push_counter", "Number of push requests")
+PULL_COUNTER = Counter("gateway_pull_counter", "Number of pull requests")
+PUSH_LATENCY = Summary("gateway_push_latency", "Latency of push requests")
+PULL_LATENCY = Summary("gateway_pull_latency", "Latency of pull requests")
 
 channel = grpc.insecure_channel(f"{os.getenv('ZOOKEEPER_HOST')}:{os.getenv('ZOOKEEPER_PORT')}")
 stub = message_pb2_grpc.MessageQueueStub(channel)
 
 app = Flask(__name__)
 
-PUSH_COUNTER = Counter("gateway_push_counter", "Number of push requests")
-PULL_COUNTER = Counter("gateway_pull_counter", "Number of pull requests")
-PUSH_LATENCY = Summary("gateway_push_latency", "Latency of push requests")
-PULL_LATENCY = Summary("gateway_pull_latency", "Latency of pull requests")
-
 @app.route("/push", methods=["POST"])
 def push():
     key = request.form["key"]
     value = base64.b64decode(request.form["value"])
-    logger.info(f"Pushing message: {key} {value}")
+    logger.debug(f"Pushing message: {key} {value}")
     message = Message(key=key, value=value)
     with PUSH_LATENCY.time():
         response = stub.Push(message)
@@ -33,8 +35,8 @@ def push():
     message = response.message
     if message == "":
         message = "No message"
-    logger.info(f"Push response: {response.status} {message}")
-    if response.status == PushStatus.SUCCESS:
+    logger.debug(f"Push response: {'SUCCESS' if response.status == Status.SUCCESS else 'FAILURE'} {message}")
+    if response.status == Status.SUCCESS:
         return jsonify(
             message=message,
         )
@@ -49,12 +51,19 @@ def pull():
     with PULL_LATENCY.time():
         response = stub.Pull(Empty())
     PULL_COUNTER.inc()
-    logger.info(f"Pulled message: {response.key} {response.value}")
-    value = response.value
+    if response.status != Status.SUCCESS:
+        logger.error(f"Failed to pull message")
+        return jsonify(
+            key="",
+            value="",
+        ), 500
+    message = response.message
+    logger.info(f"Pulled message: {message.key} {message.value}")
+    value = message.value
     value = base64.b64encode(value).decode("utf-8")
-    logger.debug(f"Returning message: {response.key} {value}")
+    logger.debug(f"Returning message: {message.key} {value}")
     return jsonify(
-        key=response.key,
+        key=message.key,
         value=value,
     )
 

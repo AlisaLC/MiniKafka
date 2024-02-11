@@ -1,9 +1,10 @@
-from proto.broker_pb2 import Empty, Message, ReplicaRequest
+from proto.broker_pb2 import Empty, Message, ReplicaRequest, Status
 import proto.broker_pb2_grpc
 import grpc
 
 import random
 import bisect
+import threading
 
 from hashring import ConsistentHashRing
 
@@ -40,20 +41,23 @@ class Broker:
     
     def push(self, key, value):
         response = self.stub.Push(Message(key=key, value=value))
-        PUSH_COUNTER.labels(queue=self.uuid, key=key).inc()
-        BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).inc()
+        if response.status == Status.SUCCESS:
+            PUSH_COUNTER.labels(queue=self.uuid, key=key).inc()
+            BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).inc()
         return response
     
     def pull(self):
         response = self.stub.Pull(Empty())
-        PULL_COUNTER.labels(queue=self.uuid, key=response.key).inc()
-        BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).dec()
+        if response.status == Status.SUCCESS:
+            PULL_COUNTER.labels(queue=self.uuid, key=response.key).inc()
+            BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).dec()
         return response
     
     def set_replica(self, replica):
         logger.info(f"Setting replica for {self.uuid} to {replica.uuid}")
         self.replica = replica
-        self.stub.SetReplica(ReplicaRequest(uuid=replica.uuid, url=replica.url))
+        response = self.stub.SetReplica(ReplicaRequest(uuid=replica.uuid, url=replica.url))
+        return response
     
     def lead_replica(self):
         logger.info(f"Leading replica for {self.uuid}")
@@ -71,6 +75,7 @@ class BrokerManager:
         self.hash_ring = ConsistentHashRing()
         self.brokers = {}
         self.broker_ring = []
+        self.lock = threading.Lock()
 
     def add_node(self, node: str):
         if node.uuid in self.brokers:
@@ -79,10 +84,11 @@ class BrokerManager:
         node.connect()
         if not node.is_alive():
             return
-        self.hash_ring.add_node(node)
-        self.brokers[node.uuid] = node
-        BROKER_COUNTER.labels(name=node.uuid).inc()
-        self.__add_node_to_chain(node)
+        with self.lock:
+            self.hash_ring.add_node(node)
+            self.brokers[node.uuid] = node
+            BROKER_COUNTER.labels(name=node.uuid).inc()
+            self.__add_node_to_chain(node)
         logger.info(f"Added broker {node.uuid}")
 
     def __add_node_to_chain(self, node):
@@ -102,14 +108,15 @@ class BrokerManager:
         if node.uuid not in self.brokers or len(self.broker_ring) == 0:
             logger.debug(f"Broker {node.uuid} does not exist")
             return
-        if len(self.broker_ring) > 2:
-            self.__remove_node_from_chain(node)
-        self.hash_ring.remove_node(node)
-        del self.brokers[node.uuid]
-        self.broker_ring.remove(node.uuid)
-        if len(self.broker_ring) == 1:
-            self.broker_ring[0].lead_replica()
-        BROKER_COUNTER.labels(name=node.uuid).dec()
+        with self.lock:
+            if len(self.broker_ring) > 2:
+                self.__remove_node_from_chain(node)
+            self.hash_ring.remove_node(node)
+            del self.brokers[node.uuid]
+            self.broker_ring.remove(node.uuid)
+            if len(self.broker_ring) == 1:
+                self.broker_ring[0].lead_replica()
+            BROKER_COUNTER.labels(name=node.uuid).dec()
         logger.info(f"Removed broker {node.uuid}")
 
     def __remove_node_from_chain(self, node):

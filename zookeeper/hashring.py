@@ -11,14 +11,14 @@ class ConsistentHashRing:
 
     def add_node(self, node):
         for i in range(self.replicas):
-            key = self.gen_key('%s:%s' % (node, i))
+            key = self.gen_key('%s:%s' % (node.uuid, i))
             self._keys.append(key)
             self._nodes[key] = node
         self._sorted_keys = sorted(self._keys)
 
     def remove_node(self, node):
         for i in range(self.replicas):
-            key = self.gen_key('%s:%s' % (node, i))
+            key = self.gen_key('%s:%s' % (node.uuid, i))
             self._keys.remove(key)
             del self._nodes[key]
         self._sorted_keys = sorted(self._keys)

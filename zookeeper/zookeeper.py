@@ -1,5 +1,5 @@
 import grpc
-from proto.message_pb2 import Message, PushResponse, PushStatus
+from proto.message_pb2 import PushResponse, PushStatus
 import proto.message_pb2_grpc as message_pb2_grpc
 from proto.zookeeper_pb2 import Empty
 import proto.zookeeper_pb2_grpc as zookeeper_pb2_grpc
@@ -7,14 +7,11 @@ import proto.zookeeper_pb2_grpc as zookeeper_pb2_grpc
 from broker import BrokerManager, Broker
 
 import os
-import time
-
 from concurrent.futures import ThreadPoolExecutor
 
+from prometheus_client import start_http_server
+
 import logging
-
-from prometheus_client import Counter, Gauge, start_http_server
-
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -24,19 +21,21 @@ class MessageQueue(message_pb2_grpc.MessageQueueServicer):
 
     def Push(self, request, context):
         queue = self.broker_manager.get_node(request.key)
-        if queue.is_alive():
-            response = queue.push(request.key, request.value)    
-            logger.info(f"Pushed message: {request.key} {request.value}")
-        else:
-            self.broker_manager.remove_node(queue)
-            response = self.Push(request, context)
+        if not queue:
+            logger.error(f"No queue for key: {request.key}")
+            return PushResponse(status=PushStatus.FAILURE, message="No queue for key")
+        response = queue.push(request.key, request.value)    
+        logger.info(f"Pushed message: {request.key} {request.value}")
         return response
 
     def Pull(self, request, context):
-        logger.debug("Pulling message")
         queue = self.broker_manager.get_random_node()
+        if not queue:
+            logger.error("No brokers available")
+            return
+        logger.debug(f"Pulling from queue: {queue.uuid}")
         message = queue.pull()
-        logger.info(f"Pulled message: {message.key} {message.value}")
+        logger.debug(f"Pulled message: {message.key} {message.value}")
         return message
 
 class Zookeeper(zookeeper_pb2_grpc.ZookeeperServicer):

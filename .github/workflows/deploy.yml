@@ -1,0 +1,34 @@
+name: deploy backend
+
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - old
+    paths:
+      - 'backend/**'
+
+
+jobs:
+  deploy-back:
+    runs-on: ubuntu-20.04
+
+    # if run on wss server, it should be changed to ubuntu 22
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Script is currently commented out
+          # as kubeconfig is not yet set up
+          # TODO
+#          script: |
+#            cd ${{ secrets.TARGET_PATH_BACKEND }}
+#            git checkout old
+#            git pull origin old
+#            docker-compose up --build -d

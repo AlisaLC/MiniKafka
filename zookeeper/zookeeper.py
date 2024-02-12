@@ -13,8 +13,10 @@ from concurrent.futures import ThreadPoolExecutor
 from prometheus_client import start_http_server
 
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 class MessageQueue(message_pb2_grpc.MessageQueueServicer):
     def __init__(self, broker_manager: BrokerManager):
@@ -44,6 +46,7 @@ class MessageQueue(message_pb2_grpc.MessageQueueServicer):
             return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage(key="", value=""))
         logger.debug(f"Pulled message: {message.key} {message.value}")
         return MQPullResponse(status=MQStatus.MQ_SUCCESS, message=MQMessage(key=message.key, value=message.value))
+
 
 class Zookeeper(zookeeper_pb2_grpc.ZookeeperServicer):
     def __init__(self, broker_manager: BrokerManager):

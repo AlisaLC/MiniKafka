@@ -9,10 +9,11 @@ import base64
 import os
 
 import logging
+from prometheus_client import generate_latest, Counter, Summary
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from prometheus_client import generate_latest, Counter, Summary
 PUSH_COUNTER = Counter("gateway_push_counter", "Number of push requests")
 PULL_COUNTER = Counter("gateway_pull_counter", "Number of pull requests")
 PUSH_LATENCY = Summary("gateway_push_latency", "Latency of push requests")
@@ -22,6 +23,7 @@ channel = grpc.insecure_channel(f"{os.getenv('ZOOKEEPER_HOST')}:{os.getenv('ZOOK
 stub = message_pb2_grpc.MessageQueueStub(channel)
 
 app = Flask(__name__)
+
 
 @app.route("/push", methods=["POST"])
 def push():
@@ -66,6 +68,7 @@ def pull():
         key=message.key,
         value=value,
     )
+
 
 @app.route("/metrics", methods=["GET"])
 def metrics():

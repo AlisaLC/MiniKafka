@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "zookeeper.py"]
+CMD ["python", "broker.py"]

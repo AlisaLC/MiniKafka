@@ -1,16 +1,15 @@
+import grpc
+import os
+import time
+import logging
+from prometheus_client import start_http_server, Counter, Gauge
+from concurrent.futures import ThreadPoolExecutor
+
 from proto.zookeeper_pb2 import DiscoveryRequest
 import proto.zookeeper_pb2_grpc
 from proto.broker_pb2 import BrokerEmpty, BrokerPushResponse, BrokerStatus, BrokerMessage, MessageList, MessageCount,\
     BrokerPullResponse
 import proto.broker_pb2_grpc as broker_pb2_grpc
-import grpc
-
-
-from prometheus_client import start_http_server
-from concurrent.futures import ThreadPoolExecutor
-import os
-import time
-import logging
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

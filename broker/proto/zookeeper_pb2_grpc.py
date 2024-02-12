@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import zookeeper_pb2 as zookeeper__pb2
+import proto.zookeeper_pb2 as zookeeper__pb2
 
 
 class ZookeeperStub(object):
@@ -16,8 +16,8 @@ class ZookeeperStub(object):
         """
         self.Ack = channel.unary_unary(
                 '/Zookeeper/Ack',
-                request_serializer=zookeeper__pb2.Empty.SerializeToString,
-                response_deserializer=zookeeper__pb2.Empty.FromString,
+                request_serializer=zookeeper__pb2.ZookeeperEmpty.SerializeToString,
+                response_deserializer=zookeeper__pb2.ZookeeperEmpty.FromString,
                 )
         self.Register = channel.unary_unary(
                 '/Zookeeper/Register',
@@ -46,8 +46,8 @@ def add_ZookeeperServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Ack': grpc.unary_unary_rpc_method_handler(
                     servicer.Ack,
-                    request_deserializer=zookeeper__pb2.Empty.FromString,
-                    response_serializer=zookeeper__pb2.Empty.SerializeToString,
+                    request_deserializer=zookeeper__pb2.ZookeeperEmpty.FromString,
+                    response_serializer=zookeeper__pb2.ZookeeperEmpty.SerializeToString,
             ),
             'Register': grpc.unary_unary_rpc_method_handler(
                     servicer.Register,
@@ -76,8 +76,8 @@ class Zookeeper(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Zookeeper/Ack',
-            zookeeper__pb2.Empty.SerializeToString,
-            zookeeper__pb2.Empty.FromString,
+            zookeeper__pb2.ZookeeperEmpty.SerializeToString,
+            zookeeper__pb2.ZookeeperEmpty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

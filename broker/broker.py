@@ -1,6 +1,6 @@
-from proto.zookeeper_pb2 import DiscoveryRequest, Status, Empty as ZookeeperEmpty
+from proto.zookeeper_pb2 import DiscoveryRequest
 import proto.zookeeper_pb2_grpc
-from proto.broker_pb2 import Empty as BrokerEmpty, PushResponse, Status, Message, MessageList, MessageCount, PullResponse
+from proto.broker_pb2 import BrokerEmpty, BrokerPushResponse, BrokerStatus, BrokerMessage, MessageList, MessageCount, BrokerPullResponse
 import proto.broker_pb2_grpc as broker_pb2_grpc
 import grpc
 
@@ -22,8 +22,8 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
     def Push(self, request, context):
         self.messages.append((request.key, request.value))
         if self.replica:
-            self.replica_stub.PushReplica(MessageList(messages=[Message(key=request.key, value=request.value)]))
-        return PushResponse(status=Status.SUCCESS, message="")
+            self.replica_stub.PushReplica(MessageList(messages=[BrokerMessage(key=request.key, value=request.value)]))
+        return BrokerPushResponse(status=BrokerStatus.BROKER_SUCCESS, message="")
     
     def Pull(self, request, context):
         if not self.messages:
@@ -32,18 +32,18 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
                 if self.messages:
                     break
             else:
-                return PullResponse(status=Status.FAILURE, message="No messages")
+                return BrokerPullResponse(status=BrokerStatus.BROKER_FAILURE, message="No messages")
         key, value = self.messages.pop(0)
         if self.replica:
             self.replica_stub.DropReplicaMessages(MessageCount(count=1))
-        return PullResponse(status=Status.SUCCESS, message=Message(key=key, value=value))
+        return BrokerPullResponse(status=BrokerStatus.BROKER_SUCCESS, message=BrokerMessage(key=key, value=value))
     
     def SetReplica(self, request, context):
         self.replica = request.uuid
         self.replica_stub = proto.broker_pb2_grpc.BrokerStub(grpc.insecure_channel(request.url))
         batch = 10
         for i in range(0, len(self.messages), batch):
-            self.replica_stub.PushReplica(MessageList(messages=[Message(key=k, value=v) for k, v in self.messages[i:i+batch]]))
+            self.replica_stub.PushReplica(MessageList(messages=[BrokerMessage(key=k, value=v) for k, v in self.messages[i:i+batch]]))
         return BrokerEmpty()
     
     def LeadReplica(self, request, context):

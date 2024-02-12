@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-enum Status {
-    SUCCESS = 0;
-    FAILURE = 1;
+enum ZookeeperStatus {
+    ZOOKEEPER_SUCCESS = 0;
+    ZOOKEEPER_FAILURE = 1;
 }
 
 message DiscoveryRequest {
@@ -11,13 +11,13 @@ message DiscoveryRequest {
 }
 
 message DiscoveryResponse {
-    Status status = 1;
+    ZookeeperStatus status = 1;
 }
 
-message Empty {}
+message ZookeeperEmpty {}
 
 service Zookeeper {
-    rpc Ack(Empty) returns (Empty) {}
+    rpc Ack(ZookeeperEmpty) returns (ZookeeperEmpty) {}
 
     rpc Register(DiscoveryRequest) returns (DiscoveryResponse) {}
 }

@@ -1,28 +1,28 @@
 syntax = "proto3";
 
-enum Status {
-    SUCCESS = 0;
-    FAILURE = 1;
+enum MQStatus {
+    MQ_SUCCESS = 0;
+    MQ_FAILURE = 1;
 }
 
-message Message {
+message MQMessage {
     string key = 1;
     bytes value = 2;
 }
 
-message PushResponse {
-    Status status = 1;
+message MQPushResponse {
+    MQStatus status = 1;
     string message = 2;
 }
 
-message PullResponse {
-    Status status = 1;
-    Message message = 2;
+message MQPullResponse {
+    MQStatus status = 1;
+    MQMessage message = 2;
 }
 
-message Empty {}
+message MQEmpty {}
 
 service MessageQueue {
-    rpc Push(Message) returns (PushResponse) {}
-    rpc Pull(Empty) returns (PullResponse) {}
+    rpc Push(MQMessage) returns (MQPushResponse) {}
+    rpc Pull(MQEmpty) returns (MQPullResponse) {}
 }

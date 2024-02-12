@@ -14,23 +14,23 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\"%\n\x07Message\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"8\n\x0cPushResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0cPullResponse\x12\x17\n\x06status\x18\x01 \x01(\x0e\x32\x07.Status\x12\x19\n\x07message\x18\x02 \x01(\x0b\x32\x08.Message\"\x07\n\x05\x45mpty*\"\n\x06Status\x12\x0b\n\x07SUCCESS\x10\x00\x12\x0b\n\x07\x46\x41ILURE\x10\x01\x32R\n\x0cMessageQueue\x12!\n\x04Push\x12\x08.Message\x1a\r.PushResponse\"\x00\x12\x1f\n\x04Pull\x12\x06.Empty\x1a\r.PullResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\"\'\n\tMQMessage\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\"<\n\x0eMQPushResponse\x12\x19\n\x06status\x18\x01 \x01(\x0e\x32\t.MQStatus\x12\x0f\n\x07message\x18\x02 \x01(\t\"H\n\x0eMQPullResponse\x12\x19\n\x06status\x18\x01 \x01(\x0e\x32\t.MQStatus\x12\x1b\n\x07message\x18\x02 \x01(\x0b\x32\n.MQMessage\"\t\n\x07MQEmpty**\n\x08MQStatus\x12\x0e\n\nMQ_SUCCESS\x10\x00\x12\x0e\n\nMQ_FAILURE\x10\x01\x32Z\n\x0cMessageQueue\x12%\n\x04Push\x12\n.MQMessage\x1a\x0f.MQPushResponse\"\x00\x12#\n\x04Pull\x12\x08.MQEmpty\x1a\x0f.MQPullResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'message_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
-  _globals['_STATUS']._serialized_start=191
-  _globals['_STATUS']._serialized_end=225
-  _globals['_MESSAGE']._serialized_start=17
-  _globals['_MESSAGE']._serialized_end=54
-  _globals['_PUSHRESPONSE']._serialized_start=56
-  _globals['_PUSHRESPONSE']._serialized_end=112
-  _globals['_PULLRESPONSE']._serialized_start=114
-  _globals['_PULLRESPONSE']._serialized_end=180
-  _globals['_EMPTY']._serialized_start=182
-  _globals['_EMPTY']._serialized_end=189
-  _globals['_MESSAGEQUEUE']._serialized_start=227
-  _globals['_MESSAGEQUEUE']._serialized_end=309
+  _globals['_MQSTATUS']._serialized_start=205
+  _globals['_MQSTATUS']._serialized_end=247
+  _globals['_MQMESSAGE']._serialized_start=17
+  _globals['_MQMESSAGE']._serialized_end=56
+  _globals['_MQPUSHRESPONSE']._serialized_start=58
+  _globals['_MQPUSHRESPONSE']._serialized_end=118
+  _globals['_MQPULLRESPONSE']._serialized_start=120
+  _globals['_MQPULLRESPONSE']._serialized_end=192
+  _globals['_MQEMPTY']._serialized_start=194
+  _globals['_MQEMPTY']._serialized_end=203
+  _globals['_MESSAGEQUEUE']._serialized_start=249
+  _globals['_MESSAGEQUEUE']._serialized_end=339
 # @@protoc_insertion_point(module_scope)

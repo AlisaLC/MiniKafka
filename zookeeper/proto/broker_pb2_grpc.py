@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import broker_pb2 as broker__pb2
+import proto.broker_pb2 as broker__pb2
 
 
 class BrokerStub(object):
@@ -16,18 +16,18 @@ class BrokerStub(object):
         """
         self.Ack = channel.unary_unary(
                 '/Broker/Ack',
-                request_serializer=broker__pb2.Empty.SerializeToString,
-                response_deserializer=broker__pb2.Empty.FromString,
+                request_serializer=broker__pb2.BrokerEmpty.SerializeToString,
+                response_deserializer=broker__pb2.BrokerEmpty.FromString,
                 )
         self.Push = channel.unary_unary(
                 '/Broker/Push',
-                request_serializer=broker__pb2.Message.SerializeToString,
-                response_deserializer=broker__pb2.PushResponse.FromString,
+                request_serializer=broker__pb2.BrokerMessage.SerializeToString,
+                response_deserializer=broker__pb2.BrokerPushResponse.FromString,
                 )
         self.Pull = channel.unary_unary(
                 '/Broker/Pull',
-                request_serializer=broker__pb2.Empty.SerializeToString,
-                response_deserializer=broker__pb2.PullResponse.FromString,
+                request_serializer=broker__pb2.BrokerEmpty.SerializeToString,
+                response_deserializer=broker__pb2.BrokerPullResponse.FromString,
                 )
         self.SetReplica = channel.unary_unary(
                 '/Broker/SetReplica',
@@ -36,23 +36,23 @@ class BrokerStub(object):
                 )
         self.LeadReplica = channel.unary_unary(
                 '/Broker/LeadReplica',
-                request_serializer=broker__pb2.Empty.SerializeToString,
-                response_deserializer=broker__pb2.Empty.FromString,
+                request_serializer=broker__pb2.BrokerEmpty.SerializeToString,
+                response_deserializer=broker__pb2.BrokerEmpty.FromString,
                 )
         self.DropReplica = channel.unary_unary(
                 '/Broker/DropReplica',
-                request_serializer=broker__pb2.Empty.SerializeToString,
-                response_deserializer=broker__pb2.Empty.FromString,
+                request_serializer=broker__pb2.BrokerEmpty.SerializeToString,
+                response_deserializer=broker__pb2.BrokerEmpty.FromString,
                 )
         self.PushReplica = channel.unary_unary(
                 '/Broker/PushReplica',
                 request_serializer=broker__pb2.MessageList.SerializeToString,
-                response_deserializer=broker__pb2.PushResponse.FromString,
+                response_deserializer=broker__pb2.BrokerPushResponse.FromString,
                 )
         self.DropReplicaMessages = channel.unary_unary(
                 '/Broker/DropReplicaMessages',
                 request_serializer=broker__pb2.MessageCount.SerializeToString,
-                response_deserializer=broker__pb2.Empty.FromString,
+                response_deserializer=broker__pb2.BrokerEmpty.FromString,
                 )
 
 
@@ -112,18 +112,18 @@ def add_BrokerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Ack': grpc.unary_unary_rpc_method_handler(
                     servicer.Ack,
-                    request_deserializer=broker__pb2.Empty.FromString,
-                    response_serializer=broker__pb2.Empty.SerializeToString,
+                    request_deserializer=broker__pb2.BrokerEmpty.FromString,
+                    response_serializer=broker__pb2.BrokerEmpty.SerializeToString,
             ),
             'Push': grpc.unary_unary_rpc_method_handler(
                     servicer.Push,
-                    request_deserializer=broker__pb2.Message.FromString,
-                    response_serializer=broker__pb2.PushResponse.SerializeToString,
+                    request_deserializer=broker__pb2.BrokerMessage.FromString,
+                    response_serializer=broker__pb2.BrokerPushResponse.SerializeToString,
             ),
             'Pull': grpc.unary_unary_rpc_method_handler(
                     servicer.Pull,
-                    request_deserializer=broker__pb2.Empty.FromString,
-                    response_serializer=broker__pb2.PullResponse.SerializeToString,
+                    request_deserializer=broker__pb2.BrokerEmpty.FromString,
+                    response_serializer=broker__pb2.BrokerPullResponse.SerializeToString,
             ),
             'SetReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.SetReplica,
@@ -132,23 +132,23 @@ def add_BrokerServicer_to_server(servicer, server):
             ),
             'LeadReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.LeadReplica,
-                    request_deserializer=broker__pb2.Empty.FromString,
-                    response_serializer=broker__pb2.Empty.SerializeToString,
+                    request_deserializer=broker__pb2.BrokerEmpty.FromString,
+                    response_serializer=broker__pb2.BrokerEmpty.SerializeToString,
             ),
             'DropReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.DropReplica,
-                    request_deserializer=broker__pb2.Empty.FromString,
-                    response_serializer=broker__pb2.Empty.SerializeToString,
+                    request_deserializer=broker__pb2.BrokerEmpty.FromString,
+                    response_serializer=broker__pb2.BrokerEmpty.SerializeToString,
             ),
             'PushReplica': grpc.unary_unary_rpc_method_handler(
                     servicer.PushReplica,
                     request_deserializer=broker__pb2.MessageList.FromString,
-                    response_serializer=broker__pb2.PushResponse.SerializeToString,
+                    response_serializer=broker__pb2.BrokerPushResponse.SerializeToString,
             ),
             'DropReplicaMessages': grpc.unary_unary_rpc_method_handler(
                     servicer.DropReplicaMessages,
                     request_deserializer=broker__pb2.MessageCount.FromString,
-                    response_serializer=broker__pb2.Empty.SerializeToString,
+                    response_serializer=broker__pb2.BrokerEmpty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -172,8 +172,8 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/Ack',
-            broker__pb2.Empty.SerializeToString,
-            broker__pb2.Empty.FromString,
+            broker__pb2.BrokerEmpty.SerializeToString,
+            broker__pb2.BrokerEmpty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -189,8 +189,8 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/Push',
-            broker__pb2.Message.SerializeToString,
-            broker__pb2.PushResponse.FromString,
+            broker__pb2.BrokerMessage.SerializeToString,
+            broker__pb2.BrokerPushResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -206,8 +206,8 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/Pull',
-            broker__pb2.Empty.SerializeToString,
-            broker__pb2.PullResponse.FromString,
+            broker__pb2.BrokerEmpty.SerializeToString,
+            broker__pb2.BrokerPullResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -240,8 +240,8 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/LeadReplica',
-            broker__pb2.Empty.SerializeToString,
-            broker__pb2.Empty.FromString,
+            broker__pb2.BrokerEmpty.SerializeToString,
+            broker__pb2.BrokerEmpty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -257,8 +257,8 @@ class Broker(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/DropReplica',
-            broker__pb2.Empty.SerializeToString,
-            broker__pb2.Empty.FromString,
+            broker__pb2.BrokerEmpty.SerializeToString,
+            broker__pb2.BrokerEmpty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -275,7 +275,7 @@ class Broker(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/PushReplica',
             broker__pb2.MessageList.SerializeToString,
-            broker__pb2.PushResponse.FromString,
+            broker__pb2.BrokerPushResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -292,6 +292,6 @@ class Broker(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Broker/DropReplicaMessages',
             broker__pb2.MessageCount.SerializeToString,
-            broker__pb2.Empty.FromString,
+            broker__pb2.BrokerEmpty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

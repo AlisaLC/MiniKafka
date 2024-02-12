@@ -1,4 +1,4 @@
-from proto.broker_pb2 import Empty, Message, ReplicaRequest, Status
+from proto.broker_pb2 import BrokerEmpty, BrokerMessage, ReplicaRequest, BrokerStatus
 import proto.broker_pb2_grpc
 import grpc
 
@@ -32,7 +32,7 @@ class Broker:
 
     def is_alive(self):
         try:
-            self.stub.Ack(Empty())
+            self.stub.Ack(BrokerEmpty())
         except:
             logger.error(f"Broker {self.uuid} is not alive")
             return False
@@ -40,15 +40,15 @@ class Broker:
         return True
     
     def push(self, key, value):
-        response = self.stub.Push(Message(key=key, value=value))
-        if response.status == Status.SUCCESS:
+        response = self.stub.Push(BrokerMessage(key=key, value=value))
+        if response.status == BrokerStatus.BROKER_SUCCESS:
             PUSH_COUNTER.labels(queue=self.uuid, key=key).inc()
             BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).inc()
         return response
     
     def pull(self):
-        response = self.stub.Pull(Empty())
-        if response.status == Status.SUCCESS:
+        response = self.stub.Pull(BrokerEmpty())
+        if response.status == BrokerStatus.BROKER_SUCCESS:
             PULL_COUNTER.labels(queue=self.uuid, key=response.key).inc()
             BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).dec()
         return response
@@ -61,11 +61,11 @@ class Broker:
     
     def lead_replica(self):
         logger.info(f"Leading replica for {self.uuid}")
-        return self.stub.LeadReplica(Empty())
+        return self.stub.LeadReplica(BrokerEmpty())
     
     def drop_replica(self):
         logger.info(f"Dropping replica for {self.uuid}")
-        return self.stub.DropReplica(Empty())
+        return self.stub.DropReplica(BrokerEmpty())
 
     def __str__(self) -> str:
         return self.uuid

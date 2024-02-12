@@ -1,7 +1,8 @@
 import grpc
-from proto.message_pb2 import PushResponse, Status, PullResponse, Message
+from proto.message_pb2 import MQPushResponse, MQStatus, MQPullResponse, MQMessage
 import proto.message_pb2_grpc as message_pb2_grpc
-from proto.zookeeper_pb2 import Empty
+from proto.broker_pb2 import BrokerStatus
+from proto.zookeeper_pb2 import ZookeeperEmpty
 import proto.zookeeper_pb2_grpc as zookeeper_pb2_grpc
 
 from broker import BrokerManager, Broker
@@ -23,36 +24,38 @@ class MessageQueue(message_pb2_grpc.MessageQueueServicer):
         queue = self.broker_manager.get_node(request.key)
         if not queue:
             logger.error(f"No queue for key: {request.key}")
-            return PushResponse(status=Status.FAILURE, message="No queue for key")
+            return MQPushResponse(status=MQStatus.FAILURE, message="No queue for key")
         response = queue.push(request.key, request.value)    
         logger.info(f"Pushed message: {request.key} {request.value}")
-        return PushResponse(status=response.status, message=response.message)
+        return MQPushResponse(
+            status=MQStatus.MQ_SUCCESS if response.status == BrokerStatus.BROKER_SUCCESS else MQStatus.MQ_FAILURE,
+            message=response.message)
 
     def Pull(self, request, context):
         queue = self.broker_manager.get_random_node()
         if not queue:
             logger.error("No brokers available")
-            return PullResponse(status=Status.FAILURE, message=Message(key="", value=""))
+            return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage(key="", value=""))
         logger.debug(f"Pulling from queue: {queue.uuid}")
         response = queue.pull()
         message = response.message
-        if response.status != Status.SUCCESS:
+        if response.status != BrokerStatus.BROKER_SUCCESS:
             logger.error(f"Failed to pull message")
-            return PullResponse(status=Status.FAILURE, message=Message(key="", value=""))
+            return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage(key="", value=""))
         logger.debug(f"Pulled message: {message.key} {message.value}")
-        return PullResponse(status=Status.SUCCESS, message=Message(key=message.key, value=message.value))
+        return MQPullResponse(status=MQStatus.MQ_SUCCESS, message=MQMessage(key=message.key, value=message.value))
 
 class Zookeeper(zookeeper_pb2_grpc.ZookeeperServicer):
     def __init__(self, broker_manager: BrokerManager):
         self.broker_manager = broker_manager
 
     def Ack(self, request, context):
-        return Empty()
+        return ZookeeperEmpty()
     
     def Register(self, request, context):
         logger.info(f"Registering broker: {request.uuid} {request.url}")
         self.broker_manager.add_node(Broker(request.uuid, request.url))
-        return Empty()
+        return ZookeeperEmpty()
 
     
 if __name__ == "__main__":

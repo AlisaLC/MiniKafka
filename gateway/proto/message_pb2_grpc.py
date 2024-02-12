@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import message_pb2 as message__pb2
+import proto.message_pb2 as message__pb2
 
 
 class MessageQueueStub(object):
@@ -16,13 +16,13 @@ class MessageQueueStub(object):
         """
         self.Push = channel.unary_unary(
                 '/MessageQueue/Push',
-                request_serializer=message__pb2.Message.SerializeToString,
-                response_deserializer=message__pb2.PushResponse.FromString,
+                request_serializer=message__pb2.MQMessage.SerializeToString,
+                response_deserializer=message__pb2.MQPushResponse.FromString,
                 )
         self.Pull = channel.unary_unary(
                 '/MessageQueue/Pull',
-                request_serializer=message__pb2.Empty.SerializeToString,
-                response_deserializer=message__pb2.PullResponse.FromString,
+                request_serializer=message__pb2.MQEmpty.SerializeToString,
+                response_deserializer=message__pb2.MQPullResponse.FromString,
                 )
 
 
@@ -46,13 +46,13 @@ def add_MessageQueueServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Push': grpc.unary_unary_rpc_method_handler(
                     servicer.Push,
-                    request_deserializer=message__pb2.Message.FromString,
-                    response_serializer=message__pb2.PushResponse.SerializeToString,
+                    request_deserializer=message__pb2.MQMessage.FromString,
+                    response_serializer=message__pb2.MQPushResponse.SerializeToString,
             ),
             'Pull': grpc.unary_unary_rpc_method_handler(
                     servicer.Pull,
-                    request_deserializer=message__pb2.Empty.FromString,
-                    response_serializer=message__pb2.PullResponse.SerializeToString,
+                    request_deserializer=message__pb2.MQEmpty.FromString,
+                    response_serializer=message__pb2.MQPullResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +76,8 @@ class MessageQueue(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/MessageQueue/Push',
-            message__pb2.Message.SerializeToString,
-            message__pb2.PushResponse.FromString,
+            message__pb2.MQMessage.SerializeToString,
+            message__pb2.MQPushResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +93,7 @@ class MessageQueue(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/MessageQueue/Pull',
-            message__pb2.Empty.SerializeToString,
-            message__pb2.PullResponse.FromString,
+            message__pb2.MQEmpty.SerializeToString,
+            message__pb2.MQPullResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

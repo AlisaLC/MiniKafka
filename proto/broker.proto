@@ -1,23 +1,23 @@
 syntax = "proto3";
 
-enum Status {
-    SUCCESS = 0;
-    FAILURE = 1;
+enum BrokerStatus {
+    BROKER_SUCCESS = 0;
+    BROKER_FAILURE = 1;
 }
 
-message Message {
+message BrokerMessage {
     string key = 1;
     bytes value = 2;
 }
 
-message PushResponse {
-    Status status = 1;
+message BrokerPushResponse {
+    BrokerStatus status = 1;
     string message = 2;
 }
 
-message PullResponse {
-    Status status = 1;
-    Message message = 2;
+message BrokerPullResponse {
+    BrokerStatus status = 1;
+    BrokerMessage message = 2;
 }
 
 message ReplicaRequest {
@@ -26,29 +26,29 @@ message ReplicaRequest {
 }
 
 message ReplicaResponse {
-    Status status = 1;
+    BrokerStatus status = 1;
 }
 
 message MessageList {
-    repeated Message messages = 1;
+    repeated BrokerMessage messages = 1;
 }
 
 message MessageCount {
     int32 count = 1;
 }
 
-message Empty {}
+message BrokerEmpty {}
 
 service Broker {
-    rpc Ack(Empty) returns (Empty) {}
+    rpc Ack(BrokerEmpty) returns (BrokerEmpty) {}
 
-    rpc Push(Message) returns (PushResponse) {}
-    rpc Pull(Empty) returns (PullResponse) {}
+    rpc Push(BrokerMessage) returns (BrokerPushResponse) {}
+    rpc Pull(BrokerEmpty) returns (BrokerPullResponse) {}
 
     rpc SetReplica(ReplicaRequest) returns (ReplicaResponse) {}
-    rpc LeadReplica(Empty) returns (Empty) {}
-    rpc DropReplica(Empty) returns (Empty) {}
+    rpc LeadReplica(BrokerEmpty) returns (BrokerEmpty) {}
+    rpc DropReplica(BrokerEmpty) returns (BrokerEmpty) {}
 
-    rpc PushReplica(MessageList) returns (PushResponse) {}
-    rpc DropReplicaMessages(MessageCount) returns (Empty) {}
+    rpc PushReplica(MessageList) returns (BrokerPushResponse) {}
+    rpc DropReplicaMessages(MessageCount) returns (BrokerEmpty) {}
 }

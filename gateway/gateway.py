@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request, jsonify
 
-from proto.message_pb2 import Message, Empty, Status
+from proto.message_pb2 import MQMessage, MQEmpty, MQStatus
 import proto.message_pb2_grpc as message_pb2_grpc
 import grpc
 
@@ -28,15 +28,15 @@ def push():
     key = request.form["key"]
     value = base64.b64decode(request.form["value"])
     logger.debug(f"Pushing message: {key} {value}")
-    message = Message(key=key, value=value)
+    message = MQMessage(key=key, value=value)
     with PUSH_LATENCY.time():
         response = stub.Push(message)
     PUSH_COUNTER.inc()
     message = response.message
     if message == "":
         message = "No message"
-    logger.debug(f"Push response: {'SUCCESS' if response.status == Status.SUCCESS else 'FAILURE'} {message}")
-    if response.status == Status.SUCCESS:
+    logger.debug(f"Push response: {'SUCCESS' if response.status == MQStatus.MQ_SUCCESS else 'FAILURE'} {message}")
+    if response.status == MQStatus.MQ_SUCCESS:
         return jsonify(
             message=message,
         )
@@ -49,9 +49,9 @@ def push():
 def pull():
     logger.debug("Pulling message")
     with PULL_LATENCY.time():
-        response = stub.Pull(Empty())
+        response = stub.Pull(MQEmpty())
     PULL_COUNTER.inc()
-    if response.status != Status.SUCCESS:
+    if response.status != MQStatus.MQ_SUCCESS:
         logger.error(f"Failed to pull message")
         return jsonify(
             key="",

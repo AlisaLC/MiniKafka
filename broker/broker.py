@@ -75,6 +75,12 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
         logger.info(f"Merging replica messages to queue messages of broker {self.uuid}")
         self.messages.extend(self.replica_messages)
         MESSAGES_LENGTH.inc(len(self.replica_messages))
+        if self.replica:
+            batch = 10
+            for i in range(0, len(self.messages), batch):
+                self.replica_stub.PushReplica(MessageList(
+                    messages=[BrokerMessage(key=k, value=v) for k, v in self.messages[i:i+batch]]
+                ))
         self.replica_messages.clear()
         REPLICA_MESSAGES_LENGTH.set(0)
         return BrokerEmpty()

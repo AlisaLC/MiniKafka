@@ -48,3 +48,29 @@ services:
       - .env
     volumes:
       - ./grafana:/etc/grafana/provisioning/datasources
+
+  broker-1:
+    container_name: broker-1
+    image: minikafka:broker
+    ports:
+      - 8001:8001
+    env_file:
+      - .env
+    environment:
+      - BROKER_HOST=broker-1
+      - BROKER_PORT=8001
+    depends_on:
+      - zookeeper
+  
+  broker-2:
+    container_name: broker-2
+    image: minikafka:broker
+    ports:
+      - 8002:8002
+    env_file:
+      - .env
+    environment:
+      - BROKER_HOST=broker-2
+      - BROKER_PORT=8002
+    depends_on:
+      - zookeeper

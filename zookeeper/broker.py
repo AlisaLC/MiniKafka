@@ -49,7 +49,7 @@ class Broker:
     def pull(self):
         response = self.stub.Pull(BrokerEmpty())
         if response.status == BrokerStatus.BROKER_SUCCESS:
-            PULL_COUNTER.labels(queue=self.uuid, key=response.key).inc()
+            PULL_COUNTER.labels(queue=self.uuid, key=response.message.key).inc()
             BROKER_MESSAGE_COUNTER.labels(queue=self.uuid).dec()
         return response
     

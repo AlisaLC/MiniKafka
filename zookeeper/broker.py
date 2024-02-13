@@ -115,7 +115,7 @@ class BrokerManager:
             del self.brokers[node.uuid]
             self.broker_ring.remove(node.uuid)
             if len(self.broker_ring) == 1:
-                self.broker_ring[0].lead_replica()
+                self.brokers[self.broker_ring[0]].lead_replica()
             BROKER_COUNTER.labels(name=node.uuid).dec()
         logger.info(f"Removed broker {node.uuid}")
 

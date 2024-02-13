@@ -67,6 +67,6 @@ if __name__ == "__main__":
     manager = BrokerManager()
     message_pb2_grpc.add_MessageQueueServicer_to_server(MessageQueue(manager), server)
     zookeeper_pb2_grpc.add_ZookeeperServicer_to_server(Zookeeper(manager), server)
-    server.add_insecure_port(f"[::]:{os.getenv('ZOOKEEPER_PORT')}")
+    server.add_insecure_port(f"0.0.0.0:{os.getenv('ZOOKEEPER_PORT')}")
     server.start()
     server.wait_for_termination()

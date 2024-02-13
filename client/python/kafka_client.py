@@ -15,9 +15,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-GATEWAY_URL = f'http://{os.getenv("GATEWAY_HOST")}:{os.getenv("GATEWAY_PORT")}'
+GATEWAY_URL = f'http://localhost:8080'
 
-logger.info(f"Gateway URL: {GATEWAY_URL}")
+logger.info(f"Gateway URL: localhost")
 
 def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes:
     response = None
@@ -60,3 +60,7 @@ def subscribe_thread(f: Callable[[str, bytes], None]) -> None:
 def subscribe(f: Callable[[str, bytes], None]) -> None:
     thread = threading.Thread(target=subscribe_thread, args=(f,))
     thread.start()
+
+
+def check():
+    print("Checking")

@@ -19,7 +19,10 @@ PULL_COUNTER = Counter("gateway_pull_counter", "Number of pull requests")
 PUSH_LATENCY = Summary("gateway_push_latency", "Latency of push requests")
 PULL_LATENCY = Summary("gateway_pull_latency", "Latency of pull requests")
 
-channel = grpc.insecure_channel(f"{os.getenv('ZOOKEEPER_HOST')}:{os.getenv('ZOOKEEPER_PORT')}")
+channel = grpc.insecure_channel(f"{os.getenv('ZOOKEEPER_HOST')}:{os.getenv('ZOOKEEPER_PORT')}",
+                                options=(('grpc.enable_http_proxy', 0),))
+
+
 stub = message_pb2_grpc.MessageQueueStub(channel)
 
 app = Flask(__name__)

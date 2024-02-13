@@ -4,7 +4,7 @@
 ### press enter once more and see if you have a increase in throughput rate of the cluster
 
 import multiprocessing
-from client import pull, push, subscribe
+from dummy_client import pull, push, subscribe
 
 TEST_SIZE = 1000 * 1000
 KEY_SIZE = 8

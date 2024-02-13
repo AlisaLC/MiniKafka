@@ -10,7 +10,7 @@ import random
 from typing import List
 from threading import Lock
 
-from client import pull, push, subscribe
+from dummy_client import pull, push, subscribe
 
 TEST_SIZE = 1000 * 1000
 KEY_SIZE = 8

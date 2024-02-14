@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from tqdm import trange
 
-from client.python.kafka_client import pull, push, subscribe
+from kafka_client import pull, push, subscribe
 
 TEST_SIZE = 10 * 1000
 KEY_SIZE = 8

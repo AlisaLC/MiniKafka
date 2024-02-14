@@ -13,4 +13,4 @@ ENV HOST ${HOST}
 ARG PORT
 ENV PORT ${PORT}
 
-CMD flask --app gateway run --host ${HOST} --port ${PORT}
+CMD gunicorn --worker-class=gevent --worker-connections=1000 --workers=5 -b ${HOST}:${PORT} gateway:app

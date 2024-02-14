@@ -1,6 +1,7 @@
 import grpc
 import os
 import time
+import threading
 import logging
 from prometheus_client import start_http_server, Counter, Gauge
 from concurrent.futures import ThreadPoolExecutor
@@ -11,7 +12,7 @@ from proto.broker_pb2 import BrokerEmpty, BrokerPushResponse, BrokerStatus, Brok
     BrokerPullResponse
 import proto.broker_pb2_grpc as broker_pb2_grpc
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 PUSH_COUNTER = Counter("broker_push_counter", "Number of push to broker")
@@ -27,6 +28,7 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
         self.replica_messages = []
         self.replica = None
         self.replica_stub = None
+        self.locks = {}
 
     def __is_replica_alive(self):
         if not self.replica:
@@ -46,12 +48,18 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
             return False
         logger.debug(f"Replica {self.replica} is alive")
         return True
+    
+    def __lock(self, key):
+        if key not in self.locks:
+            self.locks[key] = threading.Lock()
+        return self.locks[key]
 
     def Ack(self, request, context):
         return BrokerEmpty()
     
     def Push(self, request, context):
-        self.messages.append((request.key, request.value))
+        with self.__lock(request.key):
+            self.messages.append((request.key, request.value))
         logger.info(f"Pushed message {request.key} {request.value}")
         PUSH_COUNTER.inc()
         MESSAGES_LENGTH.inc()
@@ -61,8 +69,8 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
     
     def Pull(self, request, context):
         if not self.messages:
-            logger.error(f"Pulling message {self.uuid} failed!\nBroker is not available")
-            return BrokerPullResponse(status=BrokerStatus.BROKER_FAILURE, message="No messages")
+            logger.error(f"Pulling message {self.uuid} failed! Empty queue!")
+            return BrokerPullResponse(status=BrokerStatus.BROKER_FAILURE, message=BrokerMessage())
         key, value = self.messages.pop(0)
         logger.warning(f"Pulled message from Broker {self.uuid}: {key} {value}")
         PULL_COUNTER.inc()
@@ -123,7 +131,7 @@ class BrokerServer(broker_pb2_grpc.BrokerServicer):
 
 if __name__ == "__main__":
     start_http_server(8000)
-    server = grpc.server(ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(ThreadPoolExecutor(max_workers=30))
     broker = BrokerServer()
     broker_pb2_grpc.add_BrokerServicer_to_server(broker, server)
     server.add_insecure_port(f'0.0.0.0:{os.environ["BROKER_PORT"]}')

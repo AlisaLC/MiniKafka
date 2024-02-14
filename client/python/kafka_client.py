@@ -12,7 +12,7 @@ import dotenv
 dotenv.load_dotenv()
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 GATEWAY_URL = f'http://{os.getenv("GATEWAY_HOST")}:{os.getenv("GATEWAY_PORT")}'
@@ -27,11 +27,11 @@ def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes
                 response = requests.get(url, headers=headers)
             else:
                 response = requests.post(url, data=data, headers=headers)
-        except requests.exceptions.ConnectionError as e:
-            logger.error(f"{e} occurred")
-        if response.status_code != 200:
+        except requests.exceptions.ConnectionError:
+            pass
+        if response is not None and (response.status_code != 200 or response.content is None):
             response = None
-            time.sleep(1)
+            time.sleep(0.1)
     return response
 
 def push(key: str, value) -> None:

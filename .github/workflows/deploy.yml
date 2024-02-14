@@ -11,7 +11,8 @@ jobs:
           host: '${{ secrets.HOST }}'
           username: '${{ secrets.USER }}'
           port: '${{ secrets.PORT }}'
-          key: '${{ secrets.SSH_PRIVATE_KEY }}'
+          password: '${{ secrets.PASS }}'
+          command_timeout: 200m
           script: |
             cd sad/MiniKafka
             git checkout master

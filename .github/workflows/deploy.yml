@@ -16,4 +16,7 @@ jobs:
             cd sad/MiniKafka
             git checkout master
             git pull origin master
+            cd broker
+            docker build -t minikafka:broker .
+            cd ../
             docker compose up --build -d

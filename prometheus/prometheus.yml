@@ -26,3 +26,19 @@ scrape_configs:
   static_configs:
   - targets:
     - gateway:8000
+- job_name: broker-1
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  scheme: http
+  static_configs:
+  - targets:
+    - broker-1:8000
+- job_name: broker-2
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  scheme: http
+  static_configs:
+  - targets:
+    - broker-2:8000

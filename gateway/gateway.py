@@ -11,7 +11,7 @@ import os
 import logging
 from prometheus_client import generate_latest, Counter, Summary
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(__name__)
 
 PUSH_COUNTER = Counter("gateway_push_counter", "Number of push requests")

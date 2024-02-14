@@ -14,7 +14,7 @@ from prometheus_client import start_http_server
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -34,17 +34,20 @@ class MessageQueue(message_pb2_grpc.MessageQueueServicer):
             message=response.message)
 
     def Pull(self, request, context):
-        queue = self.broker_manager.get_random_node()
-        if not queue:
-            logger.error("No brokers available")
-            return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage(key="", value=""))
-        logger.debug(f"Pulling from queue: {queue.uuid}")
-        response = queue.pull()
-        message = response.message
-        if response.status != BrokerStatus.BROKER_SUCCESS:
-            logger.error(f"Failed to pull message")
-            return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage(key="", value=""))
-        logger.debug(f"Pulled message: {message.key} {message.value}")
+        response = None
+        for queue in self.broker_manager.iter_nodes_shuffled():
+            logger.debug(f"Pulling from queue: {queue.uuid}")
+            response = queue.pull()
+            message = response.message
+            if response.status == BrokerStatus.BROKER_SUCCESS:
+                break
+        if response is None or response.status != BrokerStatus.BROKER_SUCCESS:
+            if response is None:
+                logger.error("No brokers available")
+            else:
+                logger.error("Failed to pull message")
+            return MQPullResponse(status=MQStatus.MQ_FAILURE, message=MQMessage())
+        logger.info(f"Pulled message: {message.key} {message.value}")
         return MQPullResponse(status=MQStatus.MQ_SUCCESS, message=MQMessage(key=message.key, value=message.value))
 
 
@@ -63,7 +66,7 @@ class Zookeeper(zookeeper_pb2_grpc.ZookeeperServicer):
     
 if __name__ == "__main__":
     start_http_server(8000)
-    server = grpc.server(ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(ThreadPoolExecutor(max_workers=30))
     manager = BrokerManager()
     message_pb2_grpc.add_MessageQueueServicer_to_server(MessageQueue(manager), server)
     zookeeper_pb2_grpc.add_ZookeeperServicer_to_server(Zookeeper(manager), server)

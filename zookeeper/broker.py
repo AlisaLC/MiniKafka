@@ -1,3 +1,4 @@
+import time
 from proto.broker_pb2 import BrokerEmpty, BrokerMessage, ReplicaRequest, BrokerStatus
 import proto.broker_pb2_grpc
 import grpc
@@ -15,7 +16,7 @@ PULL_COUNTER = Counter("zookeeper_pull_counter", "Number of messages pulled", ["
 BROKER_MESSAGE_COUNTER = Gauge("zookeeper_broker_message_counter", "Number of messages in broker", ["queue"])
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class Broker:
@@ -90,6 +91,14 @@ class BrokerManager:
             BROKER_COUNTER.labels(name=node.uuid).inc()
             self.__add_node_to_chain(node)
         logger.info(f"Added broker {node.uuid}")
+        threading.Thread(target=self.__node_checker, args=(node,)).start()
+
+    def __node_checker(self, node):
+        while True:
+            if not node.is_alive():
+                self.remove_node(node)
+                break
+            time.sleep(1)
 
     def __add_node_to_chain(self, node):
         bisect.insort(self.broker_ring, node.uuid)
@@ -141,11 +150,13 @@ class BrokerManager:
         self.remove_node(node)
         return self.get_node(key)
     
-    def get_random_node(self):
+    def iter_nodes_shuffled(self):
+        nodes = list(self.brokers.values())
+        random.shuffle(nodes)
+        for node in nodes:
+            if node.is_alive():
+                yield node
+            else:
+                self.remove_node(node)
         if len(self.brokers) == 0:
-            return None
-        node = random.choice(list(self.brokers.values()))
-        if node.is_alive():
-            return node
-        self.remove_node(node)
-        return self.get_random_node()
+            return

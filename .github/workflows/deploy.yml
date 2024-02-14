@@ -12,6 +12,7 @@ jobs:
           username: '${{ secrets.USER }}'
           port: '${{ secrets.PORT }}'
           password: '${{ secrets.PASS }}'
+          command_timeout: 200m
           script: |
             cd sad/MiniKafka
             git checkout master

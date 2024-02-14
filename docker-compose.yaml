@@ -36,6 +36,16 @@ services:
       - gateway
     env_file:
       - .env
+
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    depends_on:
+      - gateway
+    env_file:
+      - .env
   
   grafana:
     container_name: grafana

@@ -27,8 +27,8 @@ def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes
                 response = requests.get(url, headers=headers)
             else:
                 response = requests.post(url, data=data, headers=headers)
-        except requests.exceptions.ConnectionError:
-            pass
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"{e} occurred")
         if response.status_code != 200:
             response = None
             time.sleep(1)

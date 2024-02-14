@@ -134,7 +134,7 @@ if __name__ == "__main__":
     server = grpc.server(ThreadPoolExecutor(max_workers=30))
     broker = BrokerServer()
     broker_pb2_grpc.add_BrokerServicer_to_server(broker, server)
-    server.add_insecure_port(f'0.0.0.0:{os.environ["BROKER_PORT"]}')
+    server.add_insecure_port(f'[::]:{os.environ["BROKER_PORT"]}')
     server.start()
     channel = grpc.insecure_channel(f'{os.environ["ZOOKEEPER_HOST"]}:{os.environ["ZOOKEEPER_PORT"]}')
     stub = proto.zookeeper_pb2_grpc.ZookeeperStub(channel)

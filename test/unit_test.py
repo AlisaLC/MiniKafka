@@ -53,15 +53,17 @@ def test_answer():
 
 
 
-# def test_push_pull_many():
-#     for i in range(100):
-#         python_client.push(f"key_{i}", f"value_{i}".encode("utf-8"))
-#     num_failed = 0
-#     for i in range(100):
-#         key, value = python_client.pull()
-#         if key != f"key_{i}" or value != f"value_{i}".encode("utf-8"):
-#             num_failed += 1
-#     assert num_failed == 0
+def test_push_pull_many():
+    for i in range(100):
+        python_client.push(f"key_{i}", f"value_{i}".encode("utf-8"))
+    num_failed = 0
+    for i in range(100):
+        key, value = python_client.pull()
+        # check if key index matches value index
+        if int(key.split("_")[1]) != int(value.decode("utf-8").split("_")[1]):
+            num_failed += 1
+
+    assert num_failed == 0
 
 
 

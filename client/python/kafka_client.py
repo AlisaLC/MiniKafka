@@ -23,7 +23,7 @@ logger.info(f"Gateway URL: {GATEWAY_URL}")
 def init_test_mode():
     global GATEWAY_URL
     GATEWAY_URL = f'http://localhost:{os.getenv("GATEWAY_PORT")}'
-    logger.info(f"Gateway URL: {GATEWAY_URL}")
+    logger.warning(f"Gateway URL: {GATEWAY_URL}")
 
 
 def blocking_request(method: str, url: str, data: bytes, headers: dict) -> bytes:

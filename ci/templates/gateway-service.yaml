@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  labels:
+    {{- include "ci.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.gatewayService.type }}
+  ports:
+    - port: {{ .Values.gatewayService.port }}
+      targetPort: {{ .Values.gatewayService.port }}
+      protocol: TCP
+  selector:
+    {{- include "ci.selectorLabels" . | nindent 4 }}
+    app: gateway
+  ipFamilyPolicy: SingleStack
+  ipFamilies: ["IPv6"]
+

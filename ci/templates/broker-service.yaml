@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  labels:
+    {{- include "ci.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.brokerService.type }}
+  ports:
+    - port: {{ .Values.brokerService.port }}
+      targetPort: {{ .Values.brokerService.port }}
+      protocol: TCP
+  selector:
+    {{- include "ci.selectorLabels" . | nindent 4 }}
+    app: broker
+  ipFamilyPolicy: SingleStack
+  ipFamilies: ["IPv6"]
+

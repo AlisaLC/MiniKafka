@@ -7,7 +7,6 @@ from client.python import kafka_client as python_client
 
 # simple test which gets passed for all clients
 def test_answer():
-    python_client.pull()
     assert True
 
 
@@ -56,25 +55,25 @@ def test_answer():
 
 
 
-# def test_pull_is_blocking():
-#     '''
-#     this test checks if the pull method is blocking
-#     i.e. if there is no message in the queue, the pull method should wait until a message is pushed
-#     one thread pulls, the other waits for 10 seconds and then pushes a message
-#     the pull thread should then return the pushed message after 10 seconds
-#     '''
-#     import threading
-#     import time
-#
-#     def push_after_10_seconds():
-#         time.sleep(10)
-#         python_client.push("test_pull_is_blocking", "test_pull_is_blocking".encode("utf-8"))
-#
-#     t = threading.Thread(target=push_after_10_seconds)
-#     t.start()
-#     key, value = python_client.pull()
-#     assert key == "test_pull_is_blocking"
-#     assert value == "test_pull_is_blocking".encode("utf-8")
+def test_pull_is_blocking():
+    '''
+    this test checks if the pull method is blocking
+    i.e. if there is no message in the queue, the pull method should wait until a message is pushed
+    one thread pulls, the other waits for 10 seconds and then pushes a message
+    the pull thread should then return the pushed message after 10 seconds
+    '''
+    import threading
+    import time
+
+    def push_after_10_seconds():
+        time.sleep(10)
+        python_client.push("test_pull_is_blocking", "test_pull_is_blocking".encode("utf-8"))
+
+    t = threading.Thread(target=push_after_10_seconds)
+    t.start()
+    key, value = python_client.pull()
+    assert key == "test_pull_is_blocking"
+    assert value == "test_pull_is_blocking".encode("utf-8")
 
 
 

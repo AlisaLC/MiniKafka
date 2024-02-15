@@ -49,7 +49,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./grafana-storage:/etc/grafana/provisioning/datasources
 
   broker-1:
     container_name: broker-1
@@ -78,3 +78,5 @@ services:
       - BROKER_PORT=8002
     depends_on:
       - zookeeper
+volumes:
+  grafana-storage: {}

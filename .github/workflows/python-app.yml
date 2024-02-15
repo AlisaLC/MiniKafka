@@ -38,4 +38,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        set GATEWAY_HOST=localhost
+        set GATEWAY_PORT=8082
         pytest test -o log_cli=true

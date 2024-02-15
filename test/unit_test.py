@@ -1,13 +1,23 @@
-import unittest
-from pathlib import Path
-
-
+import pytest
 from client.python import kafka_client as python_client
+
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup():
+    python_client.init_test_mode()
+    if python_client.GATEWAY_URL != 'http://localhost:8082':
+        LOGGER.error(f"Gateway URL is set to {python_client.GATEWAY_URL}")
+        exit(1)
 
 
 # simple test which gets passed for all clients
 def test_answer():
-    assert True
+    if python_client.GATEWAY_URL == 'http://localhost:8082':
+        assert True
 
 
 # def test_order():
@@ -51,7 +61,7 @@ def test_answer():
 #         key, value = python_client.pull()
 #         if key != f"key_{i}" or value != f"value_{i}".encode("utf-8"):
 #             num_failed += 1
-#     assert num_failed < 10
+#     assert num_failed == 0
 
 
 

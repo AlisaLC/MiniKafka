@@ -10,14 +10,6 @@ alerting:
     timeout: 10s
     api_version: v1
 scrape_configs:
-- job_name: node
-  honor_timestamps: true
-  scrape_interval: 15s
-  scrape_timeout: 10s
-  scheme: http
-  static_configs:
-  - targets:
-    - node-exporter:9100
 - job_name: zookeeper
   honor_timestamps: true
   scrape_interval: 15s
@@ -26,6 +18,7 @@ scrape_configs:
   static_configs:
   - targets:
     - zookeeper:8000
+    - zookeeper:9100
 - job_name: gateway
   honor_timestamps: true
   scrape_interval: 15s
@@ -34,6 +27,7 @@ scrape_configs:
   static_configs:
   - targets:
     - gateway:8000
+    - gateway:9100
 - job_name: broker-1
   honor_timestamps: true
   scrape_interval: 15s
@@ -42,6 +36,7 @@ scrape_configs:
   static_configs:
   - targets:
     - broker-1:8000
+    - broker-1:9100
 - job_name: broker-2
   honor_timestamps: true
   scrape_interval: 15s
@@ -50,3 +45,4 @@ scrape_configs:
   static_configs:
   - targets:
     - broker-2:8000
+    - broker-2:9100

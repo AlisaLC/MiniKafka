@@ -9,6 +9,7 @@ services:
         - PORT=8082
     ports:
       - 8082:8082
+      - 9103:9100
     depends_on:
       - zookeeper
     env_file:
@@ -20,6 +21,7 @@ services:
       context: zookeeper
     ports:
       - 2181:2181
+      - 9102:9100
     env_file:
       - .env
   
@@ -37,16 +39,6 @@ services:
     env_file:
       - .env
 
-  node-exporter:
-    container_name: node-exporter
-    image: prom/node-exporter
-    ports:
-      - 9100:9100
-    depends_on:
-      - gateway
-    env_file:
-      - .env
-  
   grafana:
     container_name: grafana
     image: grafana/grafana
@@ -64,6 +56,7 @@ services:
     image: minikafka:broker
     ports:
       - 8001:8001
+      - 9100:9100
     env_file:
       - .env
     environment:
@@ -77,6 +70,7 @@ services:
     image: minikafka:broker
     ports:
       - 8002:8002
+      - 9101:9100
     env_file:
       - .env
     environment:

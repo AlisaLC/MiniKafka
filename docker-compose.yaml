@@ -21,7 +21,7 @@ services:
     ports:
       - 9100:9100
     depends_on:
-      - zookeeper
+      - gateway
     env_file:
       - .env
 

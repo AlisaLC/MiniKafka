@@ -20,8 +20,6 @@ services:
     image: prom/node-exporter
     ports:
       - 9100:9100
-    depends_on:
-      - gateway
     env_file:
       - .env
 
